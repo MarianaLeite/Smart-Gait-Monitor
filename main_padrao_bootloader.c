@@ -1,3 +1,6 @@
+// Desenvolvido por Mariana Leite
+// Orientado por Renato Zanetti
+
 #include "user.h"
 
 #ifndef _BOOTLOADER  
@@ -21,13 +24,13 @@
 #endif
 
 #ifdef _BOOTLOADER  
-    //GravaÁ„o no mÛdulo fÌsico
+    //Grava√ß√£o no m√≥dulo f√≠sico
     #define PS3  1
     #define PS1  2
     #define Tad  1
     #define Ts   6
 #else
-    //SimulaÁ„o no Proteus
+    //Simula√ß√£o no Proteus
     #define PS3  0
     #define PS1  1
     #define Tad  0
@@ -52,7 +55,7 @@ int main(void) {
    
     unsigned int IND_RET = 0, PRIMEIRO[NSENS], AUX = 0, SENS_ATV = 0, SENS_DES = 0, PADRAO = 0;
     
-    RPOR1bits.RP2R = 18;        //Pino RP2(RD8) como terminal do mÛdulo Compare
+    RPOR1bits.RP2R = 18;        //Pino RP2(RD8) como terminal do m√≥dulo Compare
     TRISDbits.TRISD8 = 0;
     RPINR18bits.U1RXR = 10;     //RX
     
@@ -62,23 +65,23 @@ int main(void) {
     AD1CHSbits.CH0NA = 0;       //Vr-
     AD1CSSL = 0b110100111110;
     
-    //SaÌda ADC
-    AD1CON1bits.FORM = 0;       //Dados de saÌda no formato inteiro
+    //Sa√≠da ADC
+    AD1CON1bits.FORM = 0;       //Dados de sa√≠da no formato inteiro
     AD1CON2bits.BUFM = 1;       //Buffer de 8 words
     
-    //OperaÁ„o ADC
-    AD1CON1bits.ASAM = 1;       //Amostragem autom·tica
-    AD1CON1bits.SSRC = 2;       //Timer 3 gera convers„o
+    //Opera√ß√£o ADC
+    AD1CON1bits.ASAM = 1;       //Amostragem autom√°tica
+    AD1CON1bits.SSRC = 2;       //Timer 3 gera convers√£o
     AD1CON2bits.CSCNA = 1;      //Habilita scanning
     AD1CON2bits.SMPI = NSENS-1; //Interrompe ao preencher 3 buffers 
     AD1CON2bits.ALTS = 0;       //Sempre usar o MUXA
     
-    //TemporizaÁ„o ADC
+    //Temporiza√ß√£o ADC
     AD1CON3bits.ADRC = 0;       //Clock derivado do sistema de clock
     AD1CON3bits.ADCS = Tad;
     AD1CON3bits.SAMC = Ts;      //Tempo de amostragem
     
-    //InterrupÁ„o
+    //Interrup√ß√£o
     INTCON1bits.NSTDIS = 0;
     INTCON2bits.ALTIVT = 0;
     IFS0bits.AD1IF = 0;
@@ -106,17 +109,17 @@ int main(void) {
     //UART
     U1MODE = 0;
     U1STA = 0;
-    U1MODEbits.UEN = 0;         //U1TX e U1RX s„o os pinos usados
-    U1MODEbits.RXINV = 0;       //Idle state È '1'
+    U1MODEbits.UEN = 0;         //U1TX e U1RX s√£o os pinos usados
+    U1MODEbits.RXINV = 0;       //Idle state √© '1'
     U1MODEbits.BRGH = 1;        //Configura high speed (Fcy/4)
     U1MODEbits.PDSEL = 0;       //Sem bit de paridade 
     U1MODEbits.STSEL = 0;       //1 bit de stop
-    U1STAbits.URXISEL = 0;      //InterrupÁ„o de recepÁ„o de dados apÛs 1 dado recebido
-    U1STAbits.UTXISEL0 = 0;     //InterrupÁ„o do TX apÛs cada transmiss„o
-    U1STAbits.UTXISEL1 = 0;     //InterrupÁ„o do TX apÛs cada transmiss„o
+    U1STAbits.URXISEL = 0;      //Interrup√ß√£o de recep√ß√£o de dados ap√≥s 1 dado recebido
+    U1STAbits.UTXISEL0 = 0;     //Interrup√ß√£o do TX ap√≥s cada transmiss√£o
+    U1STAbits.UTXISEL1 = 0;     //Interrup√ß√£o do TX ap√≥s cada transmiss√£o
     U1BRG = 415;                //U1BRG = [16M/(4*9600)]-1 
     
-    //InterrupÁ„o UART
+    //Interrup√ß√£o UART
     IFS0bits.U1RXIF = 0;
     IPC2bits.U1RXIP = 7;
     
@@ -152,14 +155,14 @@ int main(void) {
         
         switch (ESTADO) {
             
-            //Realiza a cÛpia dos dados capturados no buffer circular
+            //Realiza a c√≥pia dos dados capturados no buffer circular
             case RETIRADA_DADOS:
                 if (NITENS > 0) {
                     for (AUX = 0; AUX < NSENS; AUX++) {
                         PRIMEIRO[AUX] = DADOS[AUX][IND_RET];
                     }
                     IND_RET++; NITENS--;
-                    if (NITENS < 0) {NITENS = 0;}           //Garante que o n˙mero de itens n„o seja negativo                
+                    if (NITENS < 0) {NITENS = 0;}           //Garante que o n√∫mero de itens n√£o seja negativo                
                     if (IND_RET > 60) {IND_RET = 0;}
                     ESTADO = DETERMINACAO_ACIONAMENTO;
                 }
@@ -200,13 +203,13 @@ int main(void) {
                     }
                     
                     else {
-                        SENS_DES++;                      //Incrementa quando algum sensor n„o È acionado
+                        SENS_DES++;                      //Incrementa quando algum sensor n√£o √© acionado
                     }
                 }//end\For
                 ESTADO = VERIFICACAO;
                 break;
               
-            //Verifica se o usu·rio retirou o pÈ do ch„o
+            //Verifica se o usu√°rio retirou o p√© do ch√£o
             case VERIFICACAO:     
                 if (SENS_DES == NSENS && SENS_ATV != 0) {
                     PADRAO = SENS_ATV;
@@ -220,7 +223,7 @@ int main(void) {
                 }
                 break;
             
-            //Emite o alerta, caso a condiÁ„o n„o seja satisfeita
+            //Emite o alerta, caso a condi√ß√£o n√£o seja satisfeita
             case ALERTA:
                 if (PADRAO == PADRAOP && MODO == 1) {
                     PADRAO = 0;
@@ -239,7 +242,7 @@ int main(void) {
     return -1;
 }
 
-//Realiza a aquisiÁ„o de dados no buffer circular
+//Realiza a aquisi√ß√£o de dados no buffer circular
 void __attribute__((interrupt,no_auto_psv)) _ADC1Interrupt(void){
     if(IFS0bits.AD1IF){
         IFS0bits.AD1IF = 0;
